@@ -14,7 +14,7 @@ class clsBankClient : public clsPerson
 {
 private:
 
-    enum enMode { EmptyMode = 0, UpdateMode = 1 , AddNewMode = 2 , DeleteMode = 3};
+    enum enMode { EmptyMode = 0, UpdateMode = 1 , AddNewMode = 2 };
     enMode _Mode;
     bool _MarkedForDelete = false;
     string _AccountNumber;
@@ -181,21 +181,6 @@ public:
     }
     __declspec(property(get = GetAccountBalance, put = SetAccountBalance)) float AccountBalance;
 
-    //void Print()
-    //{
-    //    cout << "\nClient Card:";
-    //    cout << "\n___________________";
-    //    cout << "\nFirstName   : " << FirstName;
-    //    cout << "\nLastName    : " << LastName;
-    //    cout << "\nFull Name   : " << FullName();
-    //    cout << "\nEmail       : " << Email;
-    //    cout << "\nPhone       : " << Phone;
-    //    cout << "\nAcc. Number : " << _AccountNumber;
-    //    cout << "\nPassword    : " << _PinCode;
-    //    cout << "\nBalance     : " << _AccountBalance;
-    //    cout << "\n___________________\n";
-
-    //}
 
     static clsBankClient Find(string AccountNumber)
         {
@@ -259,8 +244,11 @@ public:
      {
         if (_Mode == enMode::EmptyMode)
             {
+            if (IsEmpty())
+            {
                 return svFaildEmptyObject;
             }
+        }
             
         else if (_Mode == enMode::UpdateMode)
             {
@@ -277,6 +265,7 @@ public:
             else
             {
                 _AddNew();
+                _Mode = enMode::UpdateMode;
 
                 return svSucceeded;
             }
@@ -346,6 +335,7 @@ public:
        _AccountBalance += Amount;
        Save();
    }
+   
    bool Withdraw(double Amount)
    {
        if (Amount > _AccountBalance)
