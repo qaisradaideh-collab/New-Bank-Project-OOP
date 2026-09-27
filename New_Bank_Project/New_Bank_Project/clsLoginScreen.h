@@ -7,6 +7,7 @@
 #include "clsMainScreen.h"
 #include "Global.h"
 
+
 class clsLoginScreen :protected clsScreen
 {
 
@@ -33,7 +34,7 @@ private:
 
             }
 
-            if (FailedLoginCount == 0)
+            if (FailedLoginCount != 0)
             {
                 cout << "Enter Username? ";
                 cin >> Username;
@@ -54,8 +55,9 @@ private:
 
         } while (LoginFaild);
 
+        CurrentUser.RegisterLogIn();
         clsMainScreen::ShowMainMenu();
-
+        return true;
     }
 
 public:

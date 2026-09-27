@@ -7,6 +7,7 @@
 #include <fstream>
 
 const string UsersFileName = "Users2.txt";
+const string LoginRegisterFileName = "LoginRegister.txt";
 
 
 using namespace std;
@@ -21,6 +22,32 @@ private:
     int _Permissions;
 
     bool _MarkedForDelete = false;
+    struct stLoginRegisterRecord;
+
+    static stLoginRegisterRecord _ConvertLoginRegisterLineToRecord(string LoginLine, string Seperator = "#//#")
+    {
+        vector<string> vLoginData = clsString::Split(LoginLine, Seperator);
+
+        stLoginRegisterRecord LoginRecord;
+        LoginRecord.DateTime = vLoginData[0];
+        LoginRecord.UserName = vLoginData[1];
+        LoginRecord.Password = vLoginData[2];
+        LoginRecord.Permissoins = stoi(vLoginData[3]);
+
+        return LoginRecord;
+    }
+
+     string _PrepareLogInRecord(string Seperator = "#//#")
+    {
+        string LoginRecord = "";
+        LoginRecord += clsDate::GetSystemDateTimeString() + Seperator;
+        LoginRecord += _UserName + Seperator;
+        LoginRecord += _Password + Seperator;
+        LoginRecord += to_string(_Permissions);
+
+        return LoginRecord;
+
+    }
 
     static clsUser _ConvertLinetoUserObject(string Line, string Seperator = "#//#")
     {
@@ -153,7 +180,6 @@ private:
     }
 
 public:
-
     clsUser(enMode Mode, string FirstName, string LastName,
         string Email, string Phone, string UserName, string Password,
         int Permissions) :
@@ -166,10 +192,66 @@ public:
         _Permissions = Permissions;
     }
 
+    static  struct stLoginRegisterRecord
+    {
+        string DateTime;
+        string UserName;
+        string Password;
+        int Permissoins;
+
+    };
+
+    static  vector <stLoginRegisterRecord> GetLoginRegisterList()
+    {
+
+        vector <stLoginRegisterRecord> vLoginRecords;
+
+        fstream MyFile;
+        MyFile.open(LoginRegisterFileName, ios::in);//read Mode
+
+        if (MyFile.is_open())
+        {
+
+            string Line;
+
+            while (getline(MyFile, Line))
+            {
+                vLoginRecords.push_back(_ConvertLoginRegisterLineToRecord(Line));
+            }
+
+            MyFile.close();
+
+        }
+
+        return vLoginRecords;
+
+    }
+
+
+    void RegisterLogIn()
+    {
+        string  stDataLine = _PrepareLogInRecord();
+        fstream MyFile;
+        MyFile.open(LoginRegisterFileName, ios::out | ios::app);
+
+        if (MyFile.is_open())
+        {
+
+            MyFile << stDataLine << endl;
+
+            MyFile.close();
+        }
+
+    }
+
+
+
+
     bool IsEmpty()
     {
         return (_Mode == enMode::EmptyMode);
     }
+
 
     bool MarkedForDeleted()
     {
@@ -347,8 +429,7 @@ public:
 
     enum enPermissions {
         eAll = -1, pListClients = 1, pAddNewClient = 2, pDeleteClient = 4,
-        pUpdateClients = 8, pFindClient = 16, pTranactions = 32, pManageUsers = 64
-    };
+        pUpdateClients = 8, pFindClient = 16, pTranactions = 32, pManageUsers = 64 , pLoginRegister = 128 };
 
     bool CheckAccessPermission(enPermissions Permission)
     {
