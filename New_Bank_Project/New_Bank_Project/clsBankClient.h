@@ -36,9 +36,10 @@ private:
         LoginRecord.DateTime = vLoginData[0];
         LoginRecord.ClientFromAccNum = vLoginData[1];
         LoginRecord.ClienToAccNum = vLoginData[2];
-        LoginRecord.ClientFromAccBalance = stof(vLoginData[3]);
-        LoginRecord.ClienToAccBalance = stof(vLoginData[4]);
-        LoginRecord.UserName = vLoginData[5];
+        LoginRecord.ClientFromAccBalance = stof(vLoginData[4]);
+        LoginRecord.ClienToAccBalance = stof(vLoginData[5]);
+        LoginRecord.TransferAmount = stof(vLoginData[3]);
+        LoginRecord.UserName = vLoginData[6];
 
         return LoginRecord;
     }
