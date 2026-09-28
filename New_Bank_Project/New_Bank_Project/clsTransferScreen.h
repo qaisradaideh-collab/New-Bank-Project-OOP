@@ -1,6 +1,8 @@
 #include <iostream>
 #include "clsScreen.h"
 #include "clsBankClient.h"
+#include "clsUser.h"
+#include "Global.h"
 #include "clsInputValidate.h"
 using namespace std;
 
@@ -20,10 +22,10 @@ private:
 
 	}
 
-	static string _ReadAccountNumber()
+	static string _ReadAccountNumber(string FromOrTo)
 	{
 		string AccountNumber;
-		cout << "\nPlease Enter Account Number to Transfer From: ";
+		cout << "\nPlease Enter Account Number to Transfer " << FromOrTo << ": ";
 		AccountNumber = clsInputValidate::ReadString();
 		while (!clsBankClient::IsClientExist(AccountNumber))
 		{
@@ -51,15 +53,15 @@ private:
 
 	static void _PerformTransfer()
 	{
-		string AccNum = _ReadAccountNumber();
+		string AccNum = _ReadAccountNumber("From");
 		clsBankClient ClientFrom = clsBankClient::Find(AccNum);
 		_PrintClientCard(ClientFrom);
 
 
 
-		 AccNum = _ReadAccountNumber();
+		 AccNum = _ReadAccountNumber("To");
 		clsBankClient ClientTo = clsBankClient::Find(AccNum);
-		_PrintClientCard(ClientTo);
+		_PrintClientCard(ClientTo);  
 
 
 

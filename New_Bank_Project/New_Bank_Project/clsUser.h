@@ -24,6 +24,7 @@ private:
     bool _MarkedForDelete = false;
     struct stLoginRegisterRecord;
 
+
     static stLoginRegisterRecord _ConvertLoginRegisterLineToRecord(string LoginLine, string Seperator = "#//#")
     {
         vector<string> vLoginData = clsString::Split(LoginLine, Seperator);
@@ -201,6 +202,10 @@ public:
 
     };
 
+
+
+
+
     static  vector <stLoginRegisterRecord> GetLoginRegisterList()
     {
 
@@ -227,7 +232,6 @@ public:
 
     }
 
-
     void RegisterLogIn()
     {
         string  stDataLine = _PrepareLogInRecord();
@@ -243,7 +247,6 @@ public:
         }
 
     }
-
 
 
 
