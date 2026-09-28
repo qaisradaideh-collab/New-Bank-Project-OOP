@@ -349,4 +349,19 @@ public:
 
    }
 
+   bool Transfer(double Amount , clsBankClient& DestinationClient)
+   {
+       if (Withdraw(Amount))
+       {
+           DestinationClient.Deposit(Amount);
+           return true;
+       }
+       else
+       {
+           return false;
+       }
+
+
+   }
+
 };
