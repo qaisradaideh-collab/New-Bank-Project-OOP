@@ -5,6 +5,7 @@
 #include "clsString.h"
 #include <vector>
 #include <fstream>
+#include "clsUtil.h"
 
 const string UsersFileName = "Users2.txt";
 const string LoginRegisterFileName = "LoginRegister.txt";
@@ -25,30 +26,33 @@ private:
     struct stLoginRegisterRecord;
 
 
-    static stLoginRegisterRecord _ConvertLoginRegisterLineToRecord(string LoginLine, string Seperator = "#//#")
+    static stLoginRegisterRecord _ConvertLoginRegisterLineToRecord(string Line, string Seperator = "#//#")
     {
-        vector<string> vLoginData = clsString::Split(LoginLine, Seperator);
+        stLoginRegisterRecord LoginRegisterRecord;
 
-        stLoginRegisterRecord LoginRecord;
-        LoginRecord.DateTime = vLoginData[0];
-        LoginRecord.UserName = vLoginData[1];
-        LoginRecord.Password = vLoginData[2];
-        LoginRecord.Permissoins = stoi(vLoginData[3]);
 
-        return LoginRecord;
+        vector <string> LoginRegisterDataLine = clsString::Split(Line, Seperator);
+        LoginRegisterRecord.DateTime = LoginRegisterDataLine[0];
+        LoginRegisterRecord.UserName = LoginRegisterDataLine[1];
+        LoginRegisterRecord.Password = clsUtil::DecryptText(LoginRegisterDataLine[2]);
+        LoginRegisterRecord.Permissoins = stoi(LoginRegisterDataLine[3]);
+
+        return LoginRegisterRecord;
+
     }
 
-     string _PrepareLogInRecord(string Seperator = "#//#")
+    string _PrepareLogInRecord(string Seperator = "#//#")
     {
         string LoginRecord = "";
         LoginRecord += clsDate::GetSystemDateTimeString() + Seperator;
-        LoginRecord += _UserName + Seperator;
-        LoginRecord += _Password + Seperator;
-        LoginRecord += to_string(_Permissions);
-
+        LoginRecord += UserName + Seperator;
+        //here we encypt store the encrypted Password not the real one.
+        LoginRecord += clsUtil::EncryptText(Password) + Seperator;
+        LoginRecord += to_string(Permissions);
         return LoginRecord;
-
     }
+
+
 
     static clsUser _ConvertLinetoUserObject(string Line, string Seperator = "#//#")
     {
@@ -56,7 +60,7 @@ private:
         vUserData = clsString::Split(Line, Seperator);
 
         return clsUser(enMode::UpdateMode, vUserData[0], vUserData[1], vUserData[2],
-            vUserData[3], vUserData[4], vUserData[5], stoi(vUserData[6]));
+            vUserData[3], vUserData[4], clsUtil::DecryptText(vUserData[5]), stoi(vUserData[6]));
 
     }
 
@@ -69,7 +73,7 @@ private:
         UserRecord += User.Email + Seperator;
         UserRecord += User.Phone + Seperator;
         UserRecord += User.UserName + Seperator;
-        UserRecord += User.Password + Seperator;
+        UserRecord += clsUtil::EncryptText(User.Password) + Seperator;
         UserRecord += to_string(User.Permissions);
 
         return UserRecord;
